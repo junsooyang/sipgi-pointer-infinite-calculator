@@ -82,6 +82,7 @@ void insertBack(pList L, pNode N) {
 }
 
 void printList(pList L) {
+	if (L->head == NULL) { printf("\n"); return; } // 빈 리스트
 	pNode tmp = L->head;
 	for (size_t i = 1; i < L->count; i++)
 	{
@@ -92,34 +93,24 @@ void printList(pList L) {
 	//printf("Head : %d, Tail : %d", L->head->data, L->tail->data);
 }
 
+/* data 와 같은 노드를 모두 삭제 */
 void deleteData(pList L, int data) {
-	pNode tmp = L->head;
 	pNode prev = NULL;
-	for (size_t i = 0; i < L->count; i++) {
-		if(tmp->data == data) {
-			if(tmp == L->head) {
-				L->head = tmp->next;
-				free(tmp);
-				pNode tmp = prev->next;
-			}
-			else if(tmp == L->tail) {
-				L->tail = NULL;
-				prev->next = NULL;
-				free(tmp);
-				pNode tmp = prev->next;
-			}
-			else {
-				prev->next = tmp->next;
-				free(tmp);
-				pNode tmp = prev->next;
-			}
+	pNode tmp = L->head;
+	while (tmp != NULL) {
+		pNode next = tmp->next;
+		if (tmp->data == data) {
+			if (prev == NULL) L->head = next;
+			else prev->next = next;
+			if (tmp == L->tail) L->tail = prev;
+			free(tmp);
 			(L->count)--;
 		}
-		prev = tmp;
-		tmp = tmp->next;
+		else {
+			prev = tmp;
+		}
+		tmp = next;
 	}
-	free(tmp);
-	free(prev);
 }
 
 void deleteHead(pList L) {
@@ -158,27 +149,24 @@ void deleteTail(pList L) {
 	}
 }
 
+/* 앞뒤 공백을 지우고, 연속된 공백은 하나로 줄인다 */
 void removeSpace(pList L) {
+	while (L->head != NULL && L->head->data == ' ') deleteHead(L);
+	while (L->tail != NULL && L->tail->data == ' ') deleteTail(L);
+	/* 앞쪽 노드를 지운 뒤에 순회를 시작해야 해제된 노드를 건드리지 않는다 */
 	pNode temp = L->head;
-	pNode prev;
-	while (L->head->data == ' ') {
-		deleteHead(L);
-	}
-	while (L->tail->data == ' ') {
-		deleteTail(L);
-	}
-	while (temp != L->tail) {
+	while (temp != NULL && temp->next != NULL) {
 		if (temp->data == ' ' && temp->next->data == ' ') {
-			prev->next = temp->next;
-			free(temp);
+			pNode dup = temp->next;
+			temp->next = dup->next;
+			if (dup == L->tail) L->tail = temp;
+			free(dup);
 			(L->count)--;
-			temp = prev->next;
 		}
 		else {
-			prev = temp;
 			temp = temp->next;
 		}
-	}	
+	}
 }
 
 void removeZero(pList L) {

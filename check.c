@@ -11,6 +11,7 @@ int check(pList expr){
 	int count = 0;
 	char prev = 0; // 직전 문자
 	pNode curr = expr->head;
+	if (curr == NULL) return 0; // 빈 입력
 	if (curr->data == '.' || curr->data == ' ' || curr->data == '*' || curr->data == '/') return 0; 
 	while(curr != NULL){
 		count++;
@@ -19,6 +20,7 @@ int check(pList expr){
 		if (!(isdigit(curr->data) || curr->data == ' ' || curr->data == '.' || curr->data == '(' || curr->data == ')' || curr->data == '+' || curr->data == '-' || curr->data == '*' || curr->data == '/')) return 0;
 		if (curr->data == '.'){ // .. , . 
 			dot++;
+			if (!isdigit(prev)) return 0; // 소수점 앞에는 숫자가 있어야 함 (1+.5, (.5) 불가)
 			if (curr->next == NULL || !isdigit(curr->next->data)) return 0;
 			if (dot >= 2) return 0;
 		}
@@ -53,6 +55,7 @@ int check(pList expr){
 			operator++;
 			dot = 0;
 			if (operator >= 2) return 0;
+			if (curr->next != NULL && curr->next->data == ')') return 0; // (1+) 불가
 			if (curr->next != NULL && curr->next->data == ' '){
 				if (curr->next->next != NULL && (curr->next->next->data == '+' || curr->next->next->data == '-' || curr->next->next->data == '*' || curr->next->next->data == '/')) return 0;
 			}
