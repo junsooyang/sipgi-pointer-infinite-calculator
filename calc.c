@@ -15,7 +15,8 @@ int main(int argc, char* argv[]){
 	pList expr = makeList();
 	int ch; // EOF(-1) 와 문자 0xFF 를 구분하려고 int 로 받는다
 	int first = 1;
-	while ((ch = fgetc(pFile)) != EOF && ch != '\n') {
+	// 파일 끝까지 읽는다. 여러 줄이면 줄바꿈을 공백으로 바꿔 한 식으로 이어 붙인다.
+	while ((ch = fgetc(pFile)) != EOF) {
 		/* 맨 앞 UTF-8 BOM(EF BB BF) 은 건너뛴다 (메모장 저장 파일 대비) */
 		if (first && ch == 0xEF) {
 			int c2 = fgetc(pFile), c3 = fgetc(pFile);
@@ -27,9 +28,9 @@ int main(int argc, char* argv[]){
 			continue;
 		}
 		first = 0;
-		// 탭(\t), 캐리지리턴(\r), 수직탭(\v), 폼피드(\f) 등 공백류 제어 문자는 공백으로 통일.
-		// (이후 removeAllSpace 가 제거하므로 "1\t+\t2" 는 "1 + 2" 와 동일하게 처리된다)
-		if (ch == '\t' || ch == '\r' || ch == '\v' || ch == '\f') ch = ' ';
+		// 줄바꿈/탭/캐리지리턴/수직탭/폼피드 등 공백류 제어 문자는 공백으로 통일.
+		// (이후 removeAllSpace 가 제거하므로 "1+2\n+3" 은 "1+2 +3" -> "1+2+3" 으로 이어진다)
+		if (ch == '\n' || ch == '\t' || ch == '\r' || ch == '\v' || ch == '\f') ch = ' ';
 		// 그 외 제어 문자(0x00~0x1F)는 무시
 		if (ch >= 0 && ch < ' ' && ch != ' ') continue;
 		insertBack(expr, makeNode((char)ch));
