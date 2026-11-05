@@ -169,9 +169,27 @@ void removeSpace(pList L) {
 	}
 }
 
+/* 리스트의 모든 공백 노드를 제거한다 */
+void removeAllSpace(pList L) {
+	pNode prev = NULL;
+	pNode cur = L->head;
+	while (cur != NULL) {
+		pNode next = cur->next;
+		if (cur->data == ' ') {
+			if (prev == NULL) L->head = next;
+			else prev->next = next;
+			if (cur == L->tail) L->tail = prev;
+			free(cur);
+			(L->count)--;
+		}
+		else {
+			prev = cur;
+		}
+		cur = next;
+	}
+}
+
 void removeZero(pList L) {
-	pNode temp = L->head;
-	pNode prev;
 	while (L->head->data == '0') {
 		deleteHead(L);
 	}

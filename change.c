@@ -1,6 +1,10 @@
 #include "calc.h"
 
 void change(pList expr) {
+	// 공백을 모두 제거해 둔다. (check 에서 숫자 사이 공백은 이미 걸렀으므로 안전)
+	// 이후 생략 곱셈/부호 처리는 공백을 신경 쓸 필요가 없다.
+	removeAllSpace(expr);
+
 	// 괄호 사이 생략된 곱셈 처리: 3(4) -> 3*(4), (2)(3) -> (2)*(3), (2)3 -> (2)*3
 	pNode cur = expr->head;
 	while (cur != NULL && cur->next != NULL) {
