@@ -3,12 +3,12 @@
 int main(int argc, char* argv[]){
 	//1.    파일 입력받아서 연결리스트 저장받기
 	if (argc < 2) {
-		printf("usage: %s <input file>\n", argv[0]);
+		fprintf(stderr, "usage: %s <input file>\n", argv[0]);
 		return 1;
 	}
 	FILE *pFile = fopen(argv[1], "r");
 	if (pFile == NULL) {
-		printf("cannot open file: %s\n", argv[1]);
+		fprintf(stderr, "cannot open file: %s\n", argv[1]);
 		return 1;
 	}
 
@@ -43,6 +43,7 @@ int main(int argc, char* argv[]){
 	printf("Input : ");
 	printList(expr);
 	//       3.중위표기식인지 확인하기 (빈 입력도 잘못된 식)
+	int exitCode = 0; // 0: 정상, 1: 오류(식 오류/0 나누기 포함). 에러 메시지는 stderr 로 출력.
 	if (expr->head != NULL && check(expr))
 	{
 		//       4.중위표기식 다듬기 (0 추가 등)
@@ -55,8 +56,8 @@ int main(int argc, char* argv[]){
 		pList answer = seccalc(pos);
 
 		//       7.결과 출력하기
-		if (calcError == 1) printf("divide by zero\n");
-		else if (calcError == 2) printf("wrong expression\n");
+		if (calcError == 1) { fprintf(stderr, "divide by zero\n"); exitCode = 1; }
+		else if (calcError == 2) { fprintf(stderr, "wrong expression\n"); exitCode = 1; }
 		else {
 			printf("Result : ");
 			printList(answer);
@@ -67,9 +68,10 @@ int main(int argc, char* argv[]){
 		free(answer);
 	}
 	else {
-		printf("wrong expression\n");
+		fprintf(stderr, "wrong expression\n");
+		exitCode = 1;
 	}
 	freeList(expr);
 	free(expr);
-	return 0;
+	return exitCode;
 }
