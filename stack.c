@@ -1,4 +1,5 @@
 #include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h> 
 #include <limits.h>
 
@@ -10,6 +11,7 @@ struct node {
 struct node* new_node(int data) 
 { 
 	struct node* temp_node = (struct node*)malloc(sizeof(struct node)); 
+	if (temp_node == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
 	temp_node->data = data; 
 	temp_node->next = NULL; 
 	return temp_node; 

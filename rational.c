@@ -27,7 +27,9 @@ static void natReserve(Nat *a, int cap) {
 	if (cap <= a->cap) return;
 	int nc = a->cap > 0 ? a->cap : 4;
 	while (nc < cap) nc *= 2;
-	a->d = (int*)realloc(a->d, sizeof(int) * nc);
+	int *nd = (int*)realloc(a->d, sizeof(int) * nc);
+	if (nd == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
+	a->d = nd;
 	a->cap = nc;
 }
 
@@ -106,6 +108,7 @@ static Nat natMul(const Nat *a, const Nat *b) {
 	int n = a->n + b->n;
 	/* 칸 곱은 1e8 미만이라 long long 에 모았다가 마지막에 한 번만 올림 처리 */
 	long long *t = (long long*)calloc(n, sizeof(long long));
+	if (t == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
 	for (int i = 0; i < a->n; i++) {
 		long long ai = a->d[i];
 		if (ai != 0) {
@@ -483,8 +486,9 @@ static pList ratToList(const Rat *r) {
 pList seccalc(pList expr) {
 	calcError = 0;
 	Rat *st = (Rat*)malloc(sizeof(Rat) * (expr->count + 1));
-	int sp = 0;
 	char *tok = (char*)malloc(expr->count + 2);
+	if (st == NULL || tok == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
+	int sp = 0;
 	int tl = 0;
 	pNode p = expr->head;
 
