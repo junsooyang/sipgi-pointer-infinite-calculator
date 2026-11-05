@@ -48,20 +48,3 @@ int top(struct node* head)
 		return INT_MIN; 
 	return head->data; 
 }
-
-void display(struct node* head){
-
-	if(empty(head)){
-		return;
-	}
-	struct node* cursor = NULL;
-	cursor = head;
-
-	printf("STACK:");
-	while (cursor != NULL) {
-		printf(" [%c]", cursor->data);
-		cursor = cursor->next;
-	}
-	printf("\n");
-	return;
-}

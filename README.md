@@ -44,10 +44,8 @@ Result : -3.(142857)
 gcc가 필요합니다.
 
 ```
-gcc -O2 calc.c linklist.c check.c change.c postfix.c seccalc.c rational.c stack.c stackL.c -o infcal.exe
+gcc -O2 calc.c linklist.c check.c change.c postfix.c rational.c stack.c -o infcal.exe
 ```
-
-> `3_fund_cal.c`는 덧셈/뺄셈 단독 테스트용 파일(자체 `main` 포함)이라 빌드에 넣지 않습니다.
 
 ## 실행
 
@@ -125,15 +123,12 @@ Result : 0.5
 |---|---|
 | `calc.c` | `main`: 입력, 단계별 호출, 결과/에러 출력 |
 | `calc.h` | 자료구조와 함수 선언 |
-| `linklist.c` | 문자 연결리스트 (삽입, 삭제, 검색, 비교) |
+| `linklist.c` | 문자 연결리스트 (삽입, 삭제, 검색, 공백 제거) |
 | `stack.c` | 연산자 스택 (후위표기 변환용) |
-| `stackL.c` | 연결리스트를 담는 스택 (예전 계산기용) |
 | `check.c` | 입력 유효성 검사 |
-| `change.c` | 부호 처리, 생략된 곱셈 기호 삽입 |
+| `change.c` | 공백 제거, 부호 처리, 생략된 곱셈 기호 삽입 |
 | `postfix.c` | 중위 → 후위 표기 변환 |
-| `rational.c` | 큰 자연수와 분수 연산, 소수 변환 (현재 계산 엔진) |
-| `seccalc.c` | 초기 버전 연결리스트 기반 `add` / `minus` / `multiply` (현재는 호출되지 않음, 참고용) |
-| `3_fund_cal.c` | 초기 덧셈/뺄셈 단독 테스트 |
+| `rational.c` | 큰 자연수와 분수 연산, 소수 변환 (계산 엔진) |
 | `tests/` | 테스트 입력 파일 |
 
 ---
