@@ -246,14 +246,13 @@ pList add(pList a , pList b ) {
 		insertFront(ans,makeNode('-'));
 		return ans;	
 	}
+	return makeList(); // 도달하지 않음 (경고 억제)
 }
 pList minus(pList a , pList b ) {
 
 	int one,two;
 	one = (a-> head -> data != '-'?1:0);
 	two = (b-> head -> data != '-'?1:0);
-	char a_head = (a -> head -> data);
-	char b_head = (b -> head -> data);
 
 	if ( one == 1 && two == 1) {
 		if (isNode(a, '.') == 0){
@@ -353,6 +352,7 @@ pList minus(pList a , pList b ) {
 		deleteHead(b);
 		return minus(a, b);
 	}
+	return makeList(); // 도달하지 않음 (경고 억제)
 }
 
 /* 예전 pList 기반 계산기 (나눗셈 미지원). 지금은 rational.c 의 seccalc 를 사용한다. */

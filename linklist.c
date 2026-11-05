@@ -16,6 +16,7 @@ typedef struct _list {
 //Linked List를 만들기 위한 함수. 
 pList makeList() {
 	pList list = (pList)malloc(sizeof(List));
+	if (list == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
 	list->count = 0;
 	list->head = NULL;
 	list->tail = NULL;
@@ -25,6 +26,7 @@ pList makeList() {
 //Node를 만드는 함수. Data를 입력 받아서 저장하고, 만든 node를 반환한다.
 pNode makeNode(char data) {
 	pNode node = (pNode)malloc(sizeof(Node));
+	if (node == NULL) { fprintf(stderr, "out of memory\n"); exit(1); }
 	node->data = data;
 	node->next = NULL;
 	return node;
@@ -65,6 +67,7 @@ int searchNode(pList L, char data) {
 		tmp = tmp->next;
 		count++;
 	}
+	return 0; // 찾지 못함
 }
 
 void insertBack(pList L, pNode N) {
@@ -84,7 +87,7 @@ void insertBack(pList L, pNode N) {
 void printList(pList L) {
 	if (L->head == NULL) { printf("\n"); return; } // 빈 리스트
 	pNode tmp = L->head;
-	for (size_t i = 1; i < L->count; i++)
+	for (int i = 1; i < L->count; i++)
 	{
 		printf("%c", tmp->data);
 		tmp = tmp->next;
@@ -221,14 +224,16 @@ int compareList(pList a,pList b) {
 }	
 
 void freeList(pList L) {
+	// count 에 의존하지 않고 끝(NULL)까지 순회하며 해제한다.
 	pNode tmp = L->head;
-	pNode prev = NULL;
-	for (size_t i = 0; i < L->count; i++)
-	{
-		prev = tmp;			
-		tmp = tmp->next;	
-		free(prev);			
+	while (tmp != NULL) {
+		pNode next = tmp->next;
+		free(tmp);
+		tmp = next;
 	}
+	L->head = NULL;
+	L->tail = NULL;
+	L->count = 0;
 }
 
 /*

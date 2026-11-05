@@ -31,8 +31,8 @@ int main(int argc, char* argv[]){
 		// 줄바꿈/탭/캐리지리턴/수직탭/폼피드 등 공백류 제어 문자는 공백으로 통일.
 		// (이후 removeAllSpace 가 제거하므로 "1+2\n+3" 은 "1+2 +3" -> "1+2+3" 으로 이어진다)
 		if (ch == '\n' || ch == '\t' || ch == '\r' || ch == '\v' || ch == '\f') ch = ' ';
-		// 그 외 제어 문자(0x00~0x1F)는 무시
-		if (ch >= 0 && ch < ' ' && ch != ' ') continue;
+		// 그 외 제어 문자(0x00~0x1F)는 무시 (공백류는 위에서 이미 ' ' 로 바뀜)
+		if (ch >= 0 && ch < ' ') continue;
 		insertBack(expr, makeNode((char)ch));
 	}
 	fclose(pFile);
