@@ -108,9 +108,11 @@ static Nat natMul(const Nat *a, const Nat *b) {
 	long long *t = (long long*)calloc(n, sizeof(long long));
 	for (int i = 0; i < a->n; i++) {
 		long long ai = a->d[i];
-		if (ai == 0) continue;
-		for (int j = 0; j < b->n; j++) t[i + j] += ai * b->d[j];
-		/* 한 행이 끝날 때마다 올림을 정리해 long long 오버플로를 막는다 */
+		if (ai != 0) {
+			for (int j = 0; j < b->n; j++) t[i + j] += ai * b->d[j];
+		}
+		/* 주기적으로 올림을 정리해 long long 오버플로를 막는다.
+		   이 정리는 ai 값과 무관하게 항상 수행해야 안전하다. */
 		if ((i & 1023) == 1023) {
 			for (int k = 0; k < n - 1; k++) { t[k + 1] += t[k] / BASE; t[k] %= BASE; }
 		}

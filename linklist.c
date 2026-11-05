@@ -51,11 +51,13 @@ void insertBack(pList L, pNode N) {
 // index 번째 노드 뒤에 N 을 끼워 넣는다 (1부터 셈).
 void insertMid(pList L, int index, pNode N) {
 	pNode temp = L->head;
-	for (int i = 1; i < index; i++) {
+	for (int i = 1; i < index && temp != NULL; i++) {
 		temp = temp->next;
 	}
+	if (temp == NULL) { insertBack(L, N); return; } // 범위를 벗어나면 맨 뒤에 추가
 	N->next = temp->next;
 	temp->next = N;
+	if (temp == L->tail) L->tail = N; // 마지막 노드 뒤에 넣었으면 tail 갱신
 	(L->count)++;
 }
 
