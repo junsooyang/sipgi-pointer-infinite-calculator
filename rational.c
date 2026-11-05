@@ -429,11 +429,25 @@ static pList ratToList(const Rat *r) {
 
 	Nat tmp = natNew(r->den.n + 2);
 
-	/* 다음 소수 자리 하나: rem*10 을 den 으로 나눈 몫 */
+	/* 비순환 앞부분 출력. 순환마디와 마찬가지로 MAX_PERIOD 자리에서 끊는다.
+	   (소수점 아래 0 이 극단적으로 많은 분모는 pre 가 매우 커질 수 있다) */
+	int emitted = 0;
+	int preTruncated = 0;
 	for (int i = 0; i < pre && !natIsZero(&rem); i++) {
+		if (emitted >= MAX_PERIOD) { preTruncated = 1; break; }
 		natMulSmallInPlace(&rem, 10);
 		int dg = natDivStep(&rem, &r->den, &tmp);
 		insertBack(out, makeNode((char)('0' + dg)));
+		emitted++;
+	}
+	if (preTruncated) {
+		/* 앞부분이 너무 길어 잘렸다. 뒤의 순환 처리는 생략하고 ... 로 끝낸다. */
+		insertBack(out, makeNode('.'));
+		insertBack(out, makeNode('.'));
+		insertBack(out, makeNode('.'));
+		natFree(&tmp);
+		natFree(&rem);
+		return out;
 	}
 
 	if (!natIsZero(&rem)) {
